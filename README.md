@@ -1,2 +1,2 @@
 # Project_TS
-yes
+Projekt na zajęcia z Teorii Sterowania.
