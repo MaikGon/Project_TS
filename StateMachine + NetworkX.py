@@ -3,6 +3,7 @@ import time
 import matplotlib.pyplot as plt
 import networkx as nx
 
+
 class Generator(StateMachine):
     states = []
     transitions = []
@@ -45,6 +46,7 @@ class Generator(StateMachine):
     def create_master(cls, states, transitions) -> 'Generator':
         return cls(states, transitions)
 
+
 def main():
 
     plt.ion()
@@ -60,7 +62,6 @@ def main():
     G.add_edges_from([(1, 5)], label='t7')
     G.add_edges_from([(5, 1)], label='t8')
     G.add_edges_from([(1, 6)], label='t9')
-
 
     edge_labels = {(n1, n2): d['label'] for n1, n2, d in G.edges(data=True)}
     pos = nx.spring_layout(G)
@@ -253,6 +254,7 @@ def main():
                 time.sleep(2)
 
         plt.close()
+
 
 if __name__ == '__main__':
     main()
