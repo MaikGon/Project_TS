@@ -2,6 +2,9 @@ from statemachine import StateMachine, State, Transition
 import time
 import matplotlib.pyplot as plt
 import networkx as nx
+from robopy import *
+import numpy as np
+from moves import move_j
 
 
 class Generator(StateMachine):
@@ -256,5 +259,33 @@ def main():
         plt.close()
 
 
+def run():
+    model = Puma560()
+    # define joint positions
+    to_pick = [0.0, 90.0, 0.0, 0.0, 0.0, 0.0]               #podejscie do podniesienia
+    pick = [0.0, 180.0, 0.0, 0.0, 0.0, 0.0]                 #podniesienie
+    wait = [90.0, 90.0, 0.0, 0.0, 0.0, 0.0]                 #pozycja wyjsciowa
+    to_leave_good = [180.0, 90.0, 0.0, 0.0, 0.0, 0.0]       #podejscie do zaladowania
+    leave_good = [180.0, 180.0, 0.0, 0.0, 0.0, 0.0]         #zaladowanie
+    to_leave_bad = [270.0, 90.0, 0.0, 0.0, 0.0, 0.0]        #podejscie do odrzucenia
+    leave_bad = [270.0, 180.0, 0.0, 0.0, 0.0, 0.0]          #odrzucenie
+
+    path1 = move_j(model, wait, to_pick)
+    path2 = move_j(model, to_pick, pick)
+    path3 = move_j(model, pick, to_pick)
+    path4 = move_j(model, to_pick, to_leave_good)
+    path5 = move_j(model, to_leave_good, leave_good)
+    path6 = move_j(model, leave_good, to_leave_good)
+    path7 = move_j(model, to_leave_good, wait)
+    path8 = move_j(model, to_pick, to_leave_bad)
+    path9 = move_j(model, to_leave_bad, leave_bad)
+    path10 = move_j(model, leave_bad, wait)
+
+    path = np.concatenate((path1, path2, path3, path4, path5, path6, path7, path1, path2, path3, path8, path9, path10), axis=0)
+
+    model.animate(stances=path, frame_rate=30, unit='deg')
+
+
 if __name__ == '__main__':
     main()
+    run()

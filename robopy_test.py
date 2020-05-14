@@ -3,9 +3,8 @@ import time
 import matplotlib.pyplot as plt
 import networkx as nx
 from robopy import *
-import robopy as r
-from robopy import transforms as tr
 import numpy as np
+from moves import move_j
 
 
 class Generator(StateMachine):
@@ -260,35 +259,36 @@ def main():
         plt.close()
 
 
-def animate():
-    robot = model.Puma560()
+def run():
+    model = Puma560()
+    # define joint positions
+    to_pick = [0.0, 90.0, 0.0, 0.0, 0.0, 0.0]
+    pick = [0.0, 180.0, 0.0, 0.0, 0.0, 0.0]
+    wait = [90.0, 90.0, 0.0, 0.0, 0.0, 0.0]
+    to_leave_good = [180.0, 90.0, 0.0, 0.0, 0.0, 0.0]
+    leave_good = [180.0, 180.0, 0.0, 0.0, 0.0, 0.0]
+    to_leave_bad = [270.0, 90.0, 0.0, 0.0, 0.0, 0.0]
+    leave_bad = [270.0, 180.0, 0.0, 0.0, 0.0, 0.0]
 
-    base = tr.trotx(-90, unit='deg')
-    a = np.transpose(np.asmatrix(np.linspace(0, 6, 50)))
-    b = np.transpose(np.asmatrix(np.linspace(0, 6, 50)))
-    c = np.transpose(np.asmatrix(np.linspace(0, 6, 50)))
-    d = np.transpose(np.asmatrix(np.linspace(0, 6, 50)))
-    e = np.asmatrix(np.zeros((50, 1)))
-    f = np.concatenate((d, b, a, e, c, d), axis=1)
-    robot.animate(base, frame_rate=0, unit='deg')
-    robot.animate(f, frame_rate=0, unit='deg')
+    path1 = move_j(model, wait, to_pick)
+    path2 = move_j(model, to_pick, pick)
+    path3 = move_j(model, pick, to_pick)
+    path4 = move_j(model, to_pick, to_leave_good)
+    path5 = move_j(model, to_leave_good, leave_good)
+    path6 = move_j(model, leave_good, to_leave_good)
+    path7 = move_j(model, to_leave_good, wait)
+    path8 = move_j(model, to_pick, to_leave_bad)
+    path9 = move_j(model, to_leave_bad, leave_bad)
+    path10 = move_j(model, leave_bad, wait)
 
+    path = np.concatenate((path1, path2, path3, path4, path5, path6, path7, path1, path2, path3, path8, path9, path10), axis=0)
 
-def ani():
-    a = np.transpose(np.asmatrix(np.linspace(1, 50, 200)))
-    b = np.transpose(np.asmatrix(np.linspace(1, 100, 200)))
-    c = np.transpose(np.asmatrix(np.linspace(1, -200, 200)))
-    d = np.transpose(np.asmatrix(np.linspace(1, 0, 200)))
-    e = np.asmatrix(np.zeros((200, 1)))
-    f = np.concatenate(( b, a, c, d, d, d), axis=1)
-
-    robot.animate(stances=f, frame_rate=0, unit='deg')
+    model.animate(stances=path, frame_rate=30, unit='deg')
 
 
 if __name__ == '__main__':
     #main()
-    #animate()
-    ani()
+    run()
 
 
 
