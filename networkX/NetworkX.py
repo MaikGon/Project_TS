@@ -1,56 +1,12 @@
-from statemachine import StateMachine, State, Transition
-import time
 import matplotlib.pyplot as plt
 import networkx as nx
-from robopy import *
 import numpy as np
-from moves import move_j
 
 
-class Generator(StateMachine):
-    states = []
-    transitions = []
-    states_map = {}
-    current_state = None
 
-    def __init__(self, states, transitions):
+def draw(path, cur_state):
 
-        # creating each new object needs clearing its variables (otherwise they're duplicated)
-        self.states = []
-        self.transitions = []
-        self.states_map = {}
-        self.current_state = states[0]
-
-        # create fields of states and transitions using setattr()
-        # create lists of states and transitions
-        # create states map - needed by StateMachine to map states and its values
-        for s in states:
-            setattr(self, str(s.name).lower(), s)
-            self.states.append(s)
-            self.states_map[s.value] = str(s.name)
-
-        for key in transitions:
-            setattr(self, str(transitions[key].identifier).lower(), transitions[key])
-            self.transitions.append(transitions[key])
-
-        # super() - allows us to use methods of StateMachine in our Generator object
-        super(Generator, self).__init__()
-
-    # define a printable introduction of a class
-    def __repr__(self):
-        return "{}(model={!r}, state_field={!r}, current_state={!r})".format(
-            type(self).__name__, self.model, self.state_field,
-            self.current_state.identifier,
-        )
-
-    # method of creating objects in a flexible way (we can define multiple functions
-    # which will create objects in different ways)
-    @classmethod
-    def create_master(cls, states, transitions) -> 'Generator':
-        return cls(states, transitions)
-
-
-def main():
+    paths = [path]
 
     plt.ion()
     G = nx.DiGraph()
@@ -66,54 +22,13 @@ def main():
     G.add_edges_from([(5, 1)], label='t8')
     G.add_edges_from([(1, 6)], label='t9')
 
+
     edge_labels = {(n1, n2): d['label'] for n1, n2, d in G.edges(data=True)}
     pos = nx.spring_layout(G)
 
-    options = [
-        {"name": "B0", "initial": True, "value": "b0"},  # 0
-        {"name": "B1", "initial": False, "value": "b1"},  # 1
-        {"name": "B2", "initial": False, "value": "b2"},  # 2
-        {"name": "B3", "initial": False, "value": "b3"},  # 3
-        {"name": "B4", "initial": False, "value": "b4"},  # 4
-        {"name": "B5", "initial": False, "value": "b5"},  # 5
-        {"name": "B6", "initial": False, "value": "b6"}]  # 6
-
-    master_states = [State(**opt) for opt in options]
-
-    form_to = [
-        [0, [1]],
-        [1, [2, 3, 4, 5, 6]],
-        [2, [1]],
-        [3, [1]],
-        [4, [1]],
-        [5, [1]],
-        [6, []]
-    ]
-
-    # create transitions for a master (as a dict)
-    master_transitions = {}
-    for indices in form_to:
-        from_idx, to_idx_tuple = indices  # unpack list of two elements into separate from_idx and to_idx_tuple
-        for to_idx in to_idx_tuple:  # iterate over destinations from a source state
-            op_identifier = "t_{}_{}".format(from_idx, to_idx)  # parametrize identifier of a transition
-
-            # create transition object and add it to the master_transitions dict
-            transition = Transition(master_states[from_idx], master_states[to_idx], identifier=op_identifier)
-            master_transitions[op_identifier] = transition
-
-            # add transition to source state
-            master_states[from_idx].transitions.append(transition)
-
-    path_1 = ["t_0_1", "t_1_3", "t_3_1", "t_1_4", "t_4_1", "t_1_2", "t_2_1", "t_1_5", "t_5_1", "t_1_3", "t_3_1", "t_1_6"]
-
-
-    paths = [path_1]
-
     for path in paths:
 
-        # create a supervisor
-        supervisor = Generator.create_master(master_states, master_transitions)
-        print('\n' + str(supervisor))
+      
 
         # run supervisor for exemplary path
         nx.draw_networkx_edges(G, pos, connectionstyle='arc3,rad=0.2')
@@ -257,51 +172,3 @@ def main():
 
         plt.close()
 
-
-def run():
-    model = Puma560()
-    # define joint positions
-    pick = [0.0, 180.0, 0.0, 0.0, 0.0, 0.0]                 #podniesienie
-    wait = [0.0, 90.0, 0.0, 0.0, 0.0, 0.0]                  #pozycja wyjsciowa
-    to_leave_good = [180.0, 90.0, 0.0, 0.0, 0.0, 0.0]       #podejscie do zaladowania
-    leave_good = [180.0, 180.0, 0.0, 0.0, 0.0, 0.0]         #zaladowanie
-    to_leave_bad = [-90.0, 90.0, 0.0, 0.0, 0.0, 0.0]        #podejscie do odrzucenia
-    leave_bad = [-90.0, 180.0, 0.0, 0.0, 0.0, 0.0]          #odrzucenie
-
-    path1 = move_j(model, wait, pick, path_length=80)
-    path2 = move_j(model, pick, wait, path_length=50)
-    path3 = move_j(model, wait, to_leave_good, path_length=40)
-    path4 = move_j(model, to_leave_good, leave_good, path_length=80)
-    path5 = move_j(model, leave_good, to_leave_good, path_length=50)
-    path6 = move_j(model, to_leave_good, wait, path_length=40)
-    path7 = move_j(model, wait, to_leave_bad, path_length=40)
-    path8 = move_j(model, to_leave_bad, leave_bad, path_length=80)
-    path9 = move_j(model, leave_bad, to_leave_bad, path_length=50)
-    path10 = move_j(model, to_leave_bad, wait, path_length=40)
-
-    print("\n Symulacja robopy")
-    print("1. Podniesienie przedmiotu")
-    print("2. Odstawienie 1 przedmiotu na paletę")
-    print("3. Powrót do pozycji home")
-    print("4. Podniesienie przedmiotu")
-    print("5. Odstawienie 2 przedmiotu na paletę")
-    print("6. Powrót do pozycji home")
-    print("7. Podniesienie przedmiotu")
-    print("8. Odrzucenie wadliwego produktu")
-    print("9. Powrót do pozycji home")
-    print("10. Podniesienie przedmiotu")
-    print("11. Odstawienie 3 przedmiotu na paletę")
-    print("12. Powrót do pozycji home")
-    print("13. Podniesienie przedmiotu")
-    print("14. Odstawienie 1 przedmiotu na paletę")
-    print("15. Powrót do pozycji home")
-    print("16. Awaria")
-
-    path = np.concatenate((path1, path2, path3, path4, path5, path6, path1, path2, path3, path4, path5, path6, path1, path2, path7, path8, path9, path10, path1, path2, path3, path4, path5, path6, path1, path2, path3, path4, path5, path6), axis=0)
-
-    model.animate(stances=path, frame_rate=30, unit='deg')
-
-
-if __name__ == '__main__':
-    main()
-    run()
