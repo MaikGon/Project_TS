@@ -12,7 +12,6 @@ def main():
     paths = [path_1,  path_3]
     supervisor, master_transitions = stateMachine.create()
     G, edge_labels, pos = networkX.create()
-    print(G.nodes)
 
     start = input('start: ')
     finish = input('finish: ')
