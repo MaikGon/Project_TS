@@ -8,4 +8,4 @@ Po uruchomieniu skryptu "StateMachine + NetworkX.py" najpierw wyświetlany jest 
 
 ![alt text](/images/graf-1.jpg?raw=true)
 
-![alt text](https://github.com/MaikGon/Project_TS/master/images/graf_nadrzędny.jpg?raw=true)
+![alt text](/images/graf_nadrzędny.jpg?raw=true)
