@@ -291,3 +291,14 @@ def drawH(H, cur_state, prev, edge_labels2, pos2):
         prev = "a3"
     return prev
 
+
+
+def search(G, start, finish):
+    min_len = 100
+    for path in nx.all_simple_paths(G, int(start), int(finish)):
+        if len(path) <= min_len:
+            shortest = path
+
+    return shortest
+
+
