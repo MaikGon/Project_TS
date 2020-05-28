@@ -1,6 +1,6 @@
-#Project_TS
+# Project_TS
 
-###Projekt na zajęcia z Teorii Sterowania w Robotyce.
+### Projekt na zajęcia z Teorii Sterowania w Robotyce.
 
 Projekt obejmuje stanowisko zrobotyzowane, w którym robot umieszcza produkty w opakowaniu lub odrzuca produkty uszkodzone. Produkty, podjeżdżając na taśmie, podegają kontroli. Jeżeli wiązka światła nie będzie docierać do czujnika przez okres dłuższy niż określony, produkt zostanie uznany za wadliwy (AWARIA).
 
