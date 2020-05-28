@@ -6,6 +6,6 @@ Projekt obejmuje stanowisko zrobotyzowane, w którym robot umieszcza produkty w 
 
 Po uruchomieniu skryptu "StateMachine + NetworkX.py" najpierw wyświetlany jest graf stanów dla zaplanowanej przez nas sekwencji zdarzeń. Następnie uruchamiana jest wizualizacja robota wykonującego zadania odpowiadające wcześniejszej sekwencji.
 
-![alt text](https://github.com/MaikGon/Project_TS/blob/renovation/images/graf-1.jpg?raw=true)
+![alt text](https://github.com/MaikGon/Project_TS/images/graf-1.jpg?raw=true)
 
-![alt text](https://github.com/MaikGon/Project_TS/blob/renovation/images/graf_nadrzędny.jpg?raw=true)
+![alt text](https://github.com/MaikGon/Project_TS/images/graf_nadrzędny.jpg?raw=true)
