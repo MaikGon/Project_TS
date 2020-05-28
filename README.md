@@ -1,11 +1,22 @@
 #Project_TS
 
-Projekt na zajęcia z Teorii Sterowania w Robotyce.
+###Projekt na zajęcia z Teorii Sterowania w Robotyce.
 
-Projekt obejmuje stanowisko zrobotyzowane, w którym robot umieszcza produkty w opakowaniu lub odrzuca produkty uszkodzone. Produkty ułożone są na poruszającej się taśmie. Kolejne produkty pojawiają się na taśmie dopiero w momencie ukończenia poprzedniego działania przez robota i powrót do pozycji home. Oceny uszkodzenia produktu dokonuje czujnik optyczny, który składa się z nadajnika i odbiornika. Dodatkowo odmierzany jest czas przerwania wiązki światła. W sytuacji, gdy czas ten jest dłuższy niż średni czas przejazdu produktu na taśmie, stanowisko wchodzi w tryb awarii i wymagana jest reakcja człowieka. Zbyt długie przerwanie wiązki może oznaczać uszkodzenie czujnika lub przejazd dwóch produktów zaraz po sobie. Obie te sytuacje wymagają kontroli człowieka. W jednym opakowaniu można umieścić 3 produkty. Po zapełnieniu opakowania jest ono zabierane i w jego miejsce podstawiane jest nowe, puste opakowanie. 
+Projekt obejmuje stanowisko zrobotyzowane, w którym robot umieszcza produkty w opakowaniu lub odrzuca produkty uszkodzone. Produkty, podjeżdżając na taśmie, podegają kontroli. Jeżeli wiązka światła nie będzie docierać do czujnika przez okres dłuższy niż określony, produkt zostanie uznany za wadliwy (AWARIA).
 
-Po uruchomieniu skryptu "StateMachine + NetworkX.py" najpierw wyświetlany jest graf stanów dla zaplanowanej przez nas sekwencji zdarzeń. Następnie uruchamiana jest wizualizacja robota wykonującego zadania odpowiadające wcześniejszej sekwencji.
+Kolejny produkt pojawia się dopiero po obsłużeniu poprzedniego. Produkty wykonane prawidłowo umieszczane są do opakowań zbiorczych. Każde opakowanie mieści trzy produkty, na trzech kolejnych miejscach. 
+Po zapełnieniu jednego opakowania, na jego miejsce wstawiane jest kolejne, puste. 
 
 ![alt text](/images/graf-1.jpg?raw=true)
 
+
+W przypadku wystąpienia awarii, wykonywany jest graf podrzędny, prezentujący obsługę tej awarii. Po udanym naprawieniu usterki, maszyna wraca do pracy. 
+
 ![alt text](/images/graf_nadrzędny.jpg?raw=true)
+
+
+Po uruchomieniu 'main.py', w pierwszej kolejności pojawia się możliwość sprawdzenia najkrótszej ścieżki pomiędzy konkretnymi stanami głównej maszyny stanów. 
+Następnie uruchamiana jest sekwencja dla przykładowej ścieżki. Sekwencja ta ilustrowana jest na odpowiednich grafach, po czym wyświetlona zostanie symulacja robota wykonującego konkretne zadania. 
+
+
+
