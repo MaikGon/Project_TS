@@ -1,8 +1,4 @@
 from statemachine import StateMachine, State, Transition
-import time
-import matplotlib.pyplot as plt
-from robopy import *
-import numpy as np
 
 class Generator(StateMachine):
     states = []
@@ -47,8 +43,6 @@ class Generator(StateMachine):
         return cls(states, transitions)
 
 def create():
-   
-
 
     options = [
         {"name": "B0", "initial": True, "value": "b0"},  # 0
@@ -68,7 +62,7 @@ def create():
         [3, [1]],
         [4, [1]],
         [5, [1]],
-        [6, []]
+        [6, [1]]
     ]
 
     master_transitions = {}
@@ -83,5 +77,54 @@ def create():
 
             # add transition to source state
             master_states[from_idx].transitions.append(transition)
+
+    supervisor = Generator.create_master(master_states, master_transitions)
+    return supervisor, master_transitions
+
+def run(supervisor, master_transitions, event):
+    master_transitions[event]._run(supervisor)
+
+    return supervisor.current_state.value
+
+def createH():
+    optionsH = [
+        {"name": "A0", "initial": True, "value": "a0"},  # 0
+        {"name": "A1", "initial": False, "value": "a1"},  # 1
+        {"name": "A2", "initial": False, "value": "a2"},  # 2
+        {"name": "A3", "initial": False, "value": "a3"}]  # 3
+
+    subordinate_states = [State(**opt) for opt in optionsH]
+
+    form_toH = [
+        [0, [1]],
+        [1, [2, 3]],
+        [2, [1]],
+        [3, [0]]
+    ]
+
+    subordinate_transitions = {}
+    for indicesH in form_toH:
+        from_idxH, to_idx_tupleH = indicesH  # unpack list of two elements into separate from_idx and to_idx_tuple
+        for to_idxH in to_idx_tupleH:  # iterate over destinations from a source state
+            op_identifierH = "k_{}_{}".format(from_idxH, to_idxH)  # parametrize identifier of a transition
+
+            # create transition object and add it to the master_transitions dict
+            transitionH = Transition(subordinate_states[from_idxH], subordinate_states[to_idxH],
+                                     identifier=op_identifierH)
+            subordinate_transitions[op_identifierH] = transitionH
+
+            # add transition to source state
+            subordinate_states[from_idxH].transitions.append(transitionH)
+
+    subordinate = Generator.create_master(subordinate_states, subordinate_transitions)
+
+    return subordinate, subordinate_transitions
+
+
+def runH(subordinate, subordinate_transitions, event):
+    subordinate_transitions[event]._run(subordinate)
+
+    return subordinate.current_state.value
+
 
 
