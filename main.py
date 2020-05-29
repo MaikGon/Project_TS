@@ -12,15 +12,18 @@ def main():
     paths = [path_1,  path_3]
     supervisor, master_transitions = stateMachine.create()
     G, edge_labels, pos = networkX.create()
-
+    subordinate, subordinate_transitions = stateMachine.createH()
+    H, edge_labels2, pos2 = networkX.createH()
     start = input('start: ')
     finish = input('finish: ')
-    path = networkX.search(G, start, finish)
+    graph = input('graph (G or H): ')
+    if graph == "H":
+        path = networkX.search(H, start, finish)
+    elif graph == "G":
+        path = networkX.search(G, start, finish)
     print('path: ', path)
 
 
-    subordinate, subordinate_transitions = stateMachine.createH()
-    H, edge_labels2, pos2 = networkX.createH()
     prev = None
     for path in paths:
         for event in path:
@@ -29,7 +32,7 @@ def main():
             prev = networkX.draw(G, cur_state, prev, edge_labels, pos)
         if prev == "b6":
             for eve in path_2:
-                cur_state = stateMachine.runH(subordinate, subordinate_transitions, eve)
+                cur_state = stateMachine.run(subordinate, subordinate_transitions, eve)
                 plt.cla()
                 prev = networkX.drawH(H, cur_state, prev, edge_labels2, pos2)
     plt.close()

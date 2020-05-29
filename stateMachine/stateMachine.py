@@ -121,10 +121,7 @@ def createH():
     return subordinate, subordinate_transitions
 
 
-def runH(subordinate, subordinate_transitions, event):
-    subordinate_transitions[event]._run(subordinate)
 
-    return subordinate.current_state.value
 
 
 

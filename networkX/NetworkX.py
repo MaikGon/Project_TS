@@ -292,13 +292,33 @@ def drawH(H, cur_state, prev, edge_labels2, pos2):
     return prev
 
 
-
 def search(G, start, finish):
-    min_len = 100
-    for path in nx.all_simple_paths(G, int(start), int(finish)):
-        if len(path) <= min_len:
-            shortest = path
+     if int(start) not in G.nodes or int(finish) not in G.nodes:
+         print("This path is impossible")
+         return 0
+     prev = {}
+     found = False
+     next = [int(start)]
+     while found !=True:
+         child = G.out_edges(next[0])
+         par = next[0]
+         next.pop(0)
+         for c in child:
+             c = c[1]
+             prev[c] = par
+             next.append(c)
+             if c == int(finish):
+                 end = c
+                 found = True
 
-    return shortest
+     path=[]
+     p = end
+     while p!=None:
+        path.append(p)
+        if p == int(start):
+            break
+        p = prev[p]
+     path.reverse()
+     return path
 
 
