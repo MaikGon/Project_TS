@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import networkx as nx
 import time
 
+
 def create():
     G = nx.DiGraph()
     G.add_nodes_from([0, 1, 2, 3, 4, 5, 6])
@@ -22,8 +23,7 @@ def create():
 
 
 def draw(G, cur_state, prev, edge_labels, pos):
-
-    if prev == None:
+    if prev is None:
         nx.draw_networkx_edges(G, pos, connectionstyle='arc3,rad=0.2')
         nx.draw_networkx_nodes(G, pos, nodelist=range(1, 7), node_size=400)
         nx.draw_networkx_nodes(G, pos, nodelist=range(0, 1), node_size=400, node_color='r')
@@ -35,7 +35,6 @@ def draw(G, cur_state, prev, edge_labels, pos):
         prev = "b0"
         print("Inicjalizacja")
     if prev == "a0":
-        print("Obsługa awarii")
         nx.draw_networkx_nodes(G, pos, nodelist=range(0, 6), node_size=400)
         nx.draw_networkx_nodes(G, pos, nodelist=range(6, 7), node_size=400, node_color='r')
         nx.draw_networkx_edges(G, pos, connectionstyle='arc3,rad=0.2')
@@ -158,7 +157,7 @@ def draw(G, cur_state, prev, edge_labels, pos):
         prev = "b5"
 
     if cur_state == "b6":
-        print("Obsługa awarii")
+        print("Awaria")
         nx.draw_networkx_nodes(G, pos, nodelist=range(0, 6), node_size=400)
         nx.draw_networkx_nodes(G, pos, nodelist=range(6, 7), node_size=400, node_color='r')
         nx.draw_networkx_edges(G, pos, connectionstyle='arc3,rad=0.2')
@@ -201,7 +200,6 @@ def drawH(H, cur_state, prev, edge_labels2, pos2):
         time.sleep(2)
 
         prev = "a0"
-        print("Oczekiwanie na awarie")
 
     if cur_state == "a0" and prev == "a3":
         print("Oczekiwanie na awarie")
@@ -293,32 +291,30 @@ def drawH(H, cur_state, prev, edge_labels2, pos2):
 
 
 def search(G, start, finish):
-     if int(start) not in G.nodes or int(finish) not in G.nodes:
-         print("This path is impossible")
-         return 0
-     prev = {}
-     found = False
-     next = [int(start)]
-     while found !=True:
-         child = G.out_edges(next[0])
-         par = next[0]
-         next.pop(0)
-         for c in child:
-             c = c[1]
-             prev[c] = par
-             next.append(c)
-             if c == int(finish):
-                 end = c
-                 found = True
+        if int(start) not in G.nodes or int(finish) not in G.nodes:
+            print("This path is impossible")
+            return 0
+        prev = {}
+        found = False
+        next = [int(start)]
+        while found !=True:
+            child = G.out_edges(next[0])
+            par = next[0]
+            next.pop(0)
+            for c in child:
+                c = c[1]
+                prev[c] = par
+                next.append(c)
+                if c == int(finish):
+                    end = c
+                    found = True
 
-     path=[]
-     p = end
-     while p!=None:
-        path.append(p)
-        if p == int(start):
-            break
-        p = prev[p]
-     path.reverse()
-     return path
-
-
+        path=[]
+        p = end
+        while p!=None:
+            path.append(p)
+            if p == int(start):
+                break
+            p = prev[p]
+        path.reverse()
+        return path
