@@ -291,9 +291,10 @@ def drawH(H, cur_state, prev, edge_labels2, pos2):
 
 
 def search(G, start, finish):
-        if int(start) not in G.nodes or int(finish) not in G.nodes:
+        if int(start) not in G.nodes or int(finish) not in G.nodes or len(G.in_edges(finish)) == 0:
             print("This path is impossible")
             return 0
+
         prev = {}
         found = False
         next = [int(start)]

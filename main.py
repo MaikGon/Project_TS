@@ -23,10 +23,17 @@ def main():
     H, edge_labels2, pos2 = networkX.createH()
 
     # check the graph
-    print("Provide the first and the last state of the path:")
-    start = input('start: ')
-    finish = input('finish: ')
-    graph = input('graph (G or H): ')
+    print("Input which graph you would like to perform - G (main) or H (failure service)")
+    graph = input('Graph: ')
+
+    print("Input the first and the last state of the path which you'd like to check, e.g.: First: 1, Last: 4")
+    if graph == "H":
+        print("You can choose 0, 1, 2, 3")
+    elif graph == "G":
+        print("You can choose 0, 1, 2, 3, 4, 5, 6")
+    start = input('First: ')
+    finish = input('Last: ')
+
     if graph == "H":
         path = networkX.search(H, start, finish)
     elif graph == "G":
